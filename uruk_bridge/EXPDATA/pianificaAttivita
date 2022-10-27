@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Gestione Parametri eventuale
+# NUMBATCH=$1
+# -param ${NUMBATCH} // da aggiungere ad _progres
+
+# Cartella Operativa del Cliente
+AMBIENTE=$1
+ORIGINE=/u
+TERM=xterm; export TERM
+DLC=${ORIGINE}/dlc10;export DLC
+PROCFG=$DLC/progress.cfg; export PROCFG
+umask 000
+
+if [ "$AMBIENTE" == "" ]
+then
+   AMBIENTE="LATINA"
+else
+   AMBIENTE=${AMBIENTE}
+fi
+
+# WORKING DIRECTORY
+cd ${ORIGINE}/${AMBIENTE}/Development
+
+$DLC/bin/_progres -b -p ${ORIGINE}/${AMBIENTE}/ItMachine/itStart.r -param "${ORIGINE}/EXPDATA/pianificaAttivita.m" -E -d dmy -h 8 -s 128 -D 500 -yy 1950 -T ${ORIGINE}/${AMBIENTE}/Depot/ProTemp
+

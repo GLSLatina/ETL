@@ -1,0 +1,74 @@
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/u/dlc10:/u/dlc10/bin
+30 00 * * * /opt/disk2/script/backup.sh 
+
+# Esportazioni contratti clienti
+
+*/15 * * * * /u/EXPDATA/pianificaAttivita &> /dev/null
+
+
+### NON PRESENTI SU MACCHINA (2022-10-25), probabilemnte rimossi in precedenza
+#00 7 * * * /u/EXPDATA/exportcontratti &> /dev/null
+#15 7 * * * /u/EXPDATA/exportcontatti &> /dev/null
+#00 09 * * 2-6 /u/EXPDATA/exportmargini &> /dev/null
+
+
+# Sistema di rilevamento arrivi da debitori in blacklist
+30 7 * * 2-6 /root/blocklist/blacklist-arrivi.sh
+
+# Sistema di rilevamento addebiti borghi
+# 1 9 * * 2-6 /root/vie_borghi_localita/addebiti_borghi.sh
+
+# Notifica preassegnazione a distribuzione@
+0 21,22 * * 1-5 /root/arrivi_preassegnazione/arrivi_preassegnazione.sh
+
+# Sincronizza arrivi - autisti - pdc per takeaway
+5,20,35,50 * * * * /root/sync_takeaway/sincronizza_takeaway.sh
+# su server GLS gli export sono fatti con "0,15,30,45 * * * * /u/users/t99/openedge/scripts/estrai_arrivi_domani.sh"
+# su server GLS anche PDC 0,15,30,45 * * * * /u/users/t99/openedge/scripts/estrai_pdc_oggi.sh
+
+
+# Sincronizza partenze
+30 14-23 * * 1-5 /root/sync_takeaway/sincronizza_partenze.sh
+
+
+# Sincronizza PDC per Proxymity Delivery
+
+# Sincronizza contratti
+5 9 * * 1-5 /root/sync_takeaway/sincronizza_contratti.sh
+
+# Sincronizza contatti
+5 9 * * 1-5 /root/sync_takeaway/sincronizza_contatti.sh
+
+# Sincronizza partenze oggi per processamento custom
+#5,20,35,50 9-22 * * 1-5 /root/sync_partenze/sincronizza_partenze.sh
+
+# Sincronizza stato giacenze
+25 9 * * 1-5 /root/svincolo_giacenze_test/sync_stato_giacenze.sh >/dev/null 2>&1
+#49 11 * * * /root/svincolo_giacenze_test/sync_stato_giacenze.sh
+
+# Sincronizza partenze ultimi 4 mesi
+# 5 9 * * 1-5 /root/sync_partenze/sincronizza_partenze_4_mesi.sh
+
+# Sincronizza Rettifiche
+5 7 * * 1-5 /root/sync_partenze/sincronizza_rettifiche.sh
+
+
+# Analizza porto franco
+05 19 * * 1-5 /root/partenze_processing/analizza_partenze.sh 1 > /tmp/partenze_preanalisi.txt
+25 19 * * 1-5 /root/partenze_processing/analizza_partenze.sh 1 > /tmp/partenze_preanalisi.txt
+40 20 * * 1-5 /root/partenze_processing/analizza_partenze.sh 1 > /tmp/partenze_preanalisi.txt
+# Analizza porto assegnato
+50 20 * * 1-5 /root/partenze_processing/analizza_partenze.sh 2 > /tmp/partenze_preanalisi_assegnato.txt
+# Analizza indiretto
+55 20 * * 1-5 /root/partenze_processing/analizza_partenze.sh 3 > /tmp/partenze_preanalisi_indiretto.txt
+
+# Analisi partenze porto franco
+#30 19 * * 1-5 /root/partenze_processing/estrai_analisi_partenze.sh 1 > /tmp/estra_analisi_partenze.out
+#50 20 * * 1-5 /root/partenze_processing/estrai_analisi_partenze.sh 1 > /tmp/estra_analisi_partenze.out
+
+# Analisi 200kg special
+10 19 * * 1-5 /root/partenze_processing/estrai_analisi_partenze_200kg.sh 3 > /tmp/estra_analisi_partenze_200kg.out
+
+# controlli bollettazione manuale
+5 21 * * 1-5 /root/partenze_processing/estrai_analisi_partenze_assegnato.sh 2 > /tmp/estra_analisi_partenze_assegnato.out
+# 10 21 * * 1-5 /root/partenze_processing/estrai_analisi_partenze_indiretto.sh 3 > /tmp/estra_analisi_partenze_indiretto.out
